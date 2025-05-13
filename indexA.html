@@ -1,0 +1,43 @@
+<!-- index-a.html -->
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Registro de Asistencia - ICTI</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    body {
+      background: linear-gradient(to right, #005AA7, #FFFDE4);
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    .card {
+      padding: 2rem;
+      border-radius: 20px;
+      box-shadow: 0 0 20px rgba(0,0,0,0.2);
+      max-width: 500px;
+      width: 100%;
+      background-color: white;
+    }
+    .btn-custom {
+      background-color: #005AA7;
+      color: white;
+    }
+    .btn-custom:hover {
+      background-color: #003E75;
+    }
+  </style>
+</head>
+<body>
+  <div class="card text-center">
+    <h2 class="mb-4">Registro de Asistencia ICTI</h2>
+    <p class="text-muted">Por favor ingresa tu folio</p>
+    <input type="text" class="form-control mb-3" placeholder="Ej. ICTI-2025-001" />
+    <button class="btn btn-custom w-100">Registrar Asistencia</button>
+    <footer class="mt-4 text-muted small">© ICTI Morelia - 2025</footer>
+  </div>
+</body>
+</html>
