@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Escanear QR - ICTI</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/html5-qrcode"></script>
+  <style>
+    body {
+      font-family: 'Poppins', sans-serif;
+    }
+  </style>
+</head>
+<body class="bg-gray-100 min-h-screen flex items-center justify-center">
+
+  <div class="bg-white p-6 rounded-2xl shadow-lg max-w-xl w-full text-center">
+    <h2 class="text-2xl font-bold text-[#002b5c] mb-4">📸 Escáner de Código QR</h2>
+    <p class="text-gray-600 mb-6">Coloca el código frente a la cámara para registrar asistencia</p>
+
+    <!-- Área de escaneo -->
+    <div id="reader" class="mx-auto" style="width: 300px;"></div>
+
+    <!-- Resultado -->
+    <div id="resultado" class="mt-6 hidden">
+      <p class="text-green-600 font-semibold text-lg">✅ Asistencia registrada para el folio:</p>
+      <p id="folio-leido" class="text-lg font-bold text-[#002b5c] mt-2"></p>
+    </div>
+
+    <!-- Botón de reinicio -->
+    <button onclick="reiniciarEscaneo()" class="mt-6 px-4 py-2 bg-[#007acc] text-white rounded hover:bg-blue-700">
+      Escanear otro
+    </button>
+    
+    <!-- Botón para volver -->
+    <a href="index.html" class="mt-4 block text-sm text-[#002b5c] underline">← Volver al menú principal</a>
+  </div>
+
+  <script>
+    const resultado = document.getElementById("resultado");
+    const folioTexto = document.getElementById("folio-leido");
+
+    function iniciarEscaneo() {
+      const scanner = new Html5Qrcode("reader");
+
+      scanner.start(
+        { facingMode: "environment" },
+        {
+          fps: 10,
+          qrbox: 250
+        },
+        qrCodeMessage => {
+          scanner.stop(); // Detener el escaneo
+          folioTexto.textContent = qrCodeMessage;
+          resultado.classList.remove("hidden");
+          // Aquí puedes hacer una llamada AJAX para registrar asistencia en PHP
+        },
+        errorMessage => {
+          // puedes mostrar errores si quieres
+        }
+      ).catch(err => {
+        console.error(err);
+      });
+    }
+
+    function reiniciarEscaneo() {
+      location.reload();
+    }
+
+    // Iniciar al cargar
+    window.onload = iniciarEscaneo;
+  </script>
+
+</body>
+</html>
