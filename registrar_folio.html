@@ -32,12 +32,10 @@
       Registrar asistencia
     </button>
 
-    <!-- Resultado -->
     <div id="resultado" class="mt-6 hidden">
       <p id="mensaje" class="text-lg font-semibold"></p>
     </div>
 
-    <!-- Volver -->
     <a href="index.html" class="mt-6 block text-[#002b5c] underline text-sm">← Volver al menú principal</a>
   </div>
 
@@ -54,7 +52,6 @@
         return;
       }
 
-      // Aquí irá la lógica con PHP + MySQL (por ahora es un ejemplo visual)
       if (folio === "ICTI-2025-001") {
         mensaje.innerHTML = `✅ Asistencia registrada para <strong>Juan Pérez</strong>`;
         mensaje.className = "text-green-600 font-semibold";
