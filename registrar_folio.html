@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Registrar por Folio - ICTI</title>
+  <title>Registrar Asistencia por Folio - ICTI</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet" />
   <style>
@@ -12,56 +12,71 @@
     }
   </style>
 </head>
-<body class="bg-gray-100 flex items-center justify-center min-h-screen">
+<body class="bg-gray-100 flex items-center justify-center min-h-screen p-4">
 
   <div class="bg-white p-8 rounded-2xl shadow-lg w-full max-w-xl text-center">
     <h2 class="text-2xl font-bold text-[#002b5c] mb-4">🔍 Registrar Asistencia por Folio</h2>
-    <p class="text-gray-600 mb-6">Escribe el folio tal como aparece en el archivo</p>
+    <p class="text-gray-600 mb-6">Ingresa el folio tal como aparece en tu comprobante</p>
 
-    <input
-      id="folio-input"
-      type="text"
-      class="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 mb-4"
-      placeholder="Ej. ICTI-2025-004"
-    />
+    
+    <form id="folioForm" class="space-y-4">
+      <input
+        type="text"
+        name="folio"
+        id="folio"
+        required
+        class="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+        placeholder="Ej. ICTI-2025-001"
+      />
 
-    <button
-      onclick="verificarFolio()"
-      class="w-full bg-[#007acc] hover:bg-blue-700 text-white font-semibold py-2 rounded-lg transition"
-    >
-      Registrar asistencia
-    </button>
+      <button
+        type="submit"
+        class="w-full bg-[#007acc] hover:bg-blue-700 text-white font-semibold py-2 rounded-lg transition"
+      >
+        Registrar asistencia
+      </button>
+    </form>
 
-    <div id="resultado" class="mt-6 hidden">
-      <p id="mensaje" class="text-lg font-semibold"></p>
-    </div>
+    <!-- Resultado -->
+    <div id="resultado" class="mt-6 text-lg font-semibold"></div>
 
-    <a href="index.html" class="mt-6 block text-[#002b5c] underline text-sm">← Volver al menú principal</a>
+    <a href="index.php" class="mt-6 block text-[#002b5c] underline text-sm">← Volver al menú principal</a>
   </div>
 
   <script>
-    function verificarFolio() {
-      const folio = document.getElementById("folio-input").value.trim();
-      const mensaje = document.getElementById("mensaje");
-      const resultado = document.getElementById("resultado");
+    const form = document.getElementById("folioForm");
+    const resultado = document.getElementById("resultado");
+
+    form.addEventListener("submit", function (e) {
+      e.preventDefault(); 
+
+      const folio = document.getElementById("folio").value.trim();
 
       if (folio === "") {
-        mensaje.textContent = "❌ Por favor ingresa un folio válido.";
-        mensaje.className = "text-red-600 font-semibold";
-        resultado.classList.remove("hidden");
+        resultado.textContent = "⚠️ Ingresa un folio válido.";
+        resultado.className = "mt-6 text-red-600 font-semibold";
         return;
       }
 
-      if (folio === "ICTI-2025-001") {
-        mensaje.innerHTML = `✅ Asistencia registrada para <strong>Juan Pérez</strong>`;
-        mensaje.className = "text-green-600 font-semibold";
-      } else {
-        mensaje.textContent = "❌ Folio no encontrado.";
-        mensaje.className = "text-red-600 font-semibold";
-      }
-
-      resultado.classList.remove("hidden");
-    }
+      fetch("registrar_folio.php", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/x-www-form-urlencoded",
+        },
+        body: `folio=${encodeURIComponent(folio)}`
+      })
+      .then(response => response.text())
+      .then(data => {
+        resultado.innerHTML = data;
+        resultado.className = "mt-6 text-green-600 font-semibold";
+        form.reset(); 
+      })
+      .catch(error => {
+        resultado.textContent = "❌ Ocurrió un error al registrar.";
+        resultado.className = "mt-6 text-red-600 font-semibold";
+        console.error(error);
+      });
+    });
   </script>
 
 </body>
