@@ -74,10 +74,10 @@ $conn->close();
     <h3 class="text-xl font-bold text-gray-800 mb-4">⚙️ Funciones Administrativas</h3>
     <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
 
-      <div class="bg-white rounded-2xl shadow-lg p-6 text-center hover:shadow-xl block">
-        <div class="text-4xl mb-2">⬆️</div>
-        <h3 class="text-lg font-semibold">Cargar Base de Datos</h3>
-      </div>
+      <a href="cargar_base.html" class="bg-white rounded-2xl shadow-lg p-6 text-center hover:shadow-xl block">
+    <div class="text-4xl mb-2">⬆️</div>
+    <h3 class="text-lg font-semibold">Cargar Base de Datos</h3>
+  </a>
 
       <a href="crear_evento.html" class="bg-white rounded-2xl shadow-lg p-6 text-center hover:shadow-xl block">
         <div class="text-4xl mb-2">📅</div>
