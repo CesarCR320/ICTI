@@ -9,7 +9,6 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_FILES["archivo_csv"])) {
         exit("❌ El archivo debe tener extensión .csv");
     }
 
-    // Buscar evento activo
     $eventoQuery = "SELECT id FROM eventos WHERE activo = 1 LIMIT 1";
     $eventoResult = $conn->query($eventoQuery);
 
@@ -25,11 +24,10 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_FILES["archivo_csv"])) {
         exit("❌ No se pudo abrir el archivo.");
     }
 
-    $encabezado = fgetcsv($handle); // saltar cabecera
+    $encabezado = fgetcsv($handle); 
     $insertados = 0;
 
     while (($data = fgetcsv($handle, 1000, ",")) !== FALSE) {
-        // Ajusta el orden según el CSV real
         $folio                = $data[0];
         $nombre               = $data[1];
         $apellido_paterno     = $data[2];
