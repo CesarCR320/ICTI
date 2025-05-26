@@ -13,20 +13,18 @@
 <body class="bg-gray-100 text-gray-800">
 
   <div class="max-w-4xl mx-auto px-4 py-6">
-    <!-- Encabezado -->
     <div class="text-center mb-6">
       <h1 class="text-3xl font-bold text-[#002b5c]">📷 Registro de Asistencia</h1>
       <p class="text-sm text-gray-600 mt-2">Escanea el código QR del asistente para marcar su presencia en el evento.</p>
     </div>
 
-    <!-- Cámara y Área de Escaneo -->
+    
     <div class="bg-white p-6 rounded-xl shadow-lg flex flex-col items-center gap-4">
       <div id="reader" class="w-full max-w-sm mx-auto border-4 border-[#007acc] rounded-lg overflow-hidden shadow"></div>
       <p class="text-center text-sm text-gray-500">Coloca el código QR frente a la cámara. El registro es automático.</p>
     </div>
   </div>
 
-  <!-- Modal -->
   <div id="modal" class="fixed inset-0 z-50 bg-black bg-opacity-50 hidden flex items-center justify-center">
     <div class="bg-white rounded-lg shadow-lg p-6 w-full max-w-lg relative">
       <button id="cerrarModal" class="absolute top-2 right-3 text-xl text-gray-500 hover:text-black">×</button>
@@ -35,7 +33,7 @@
     </div>
   </div>
 
-  <!-- JS -->
+  
   <script>
     let scanner = new Html5Qrcode("reader");
 
@@ -63,7 +61,7 @@
     });
 
     function onScanSuccess(decodedText) {
-      scanner.pause(); // Pausar escáner para mostrar datos
+      scanner.pause(); 
       buscarAsistente(decodedText);
     }
 
@@ -75,7 +73,7 @@
       }
     });
 
-    // Cerrar modal al hacer clic fuera del contenido
+    
     $("#modal").on("click", function (e) {
       if (e.target.id === "modal") {
         cerrarModal();
