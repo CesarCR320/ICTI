@@ -60,10 +60,11 @@ $conn->close();
         <h3 class="text-lg font-semibold">Registrar por Folio</h3>
       </a>
 
-      <div class="bg-white rounded-2xl shadow-lg p-6 text-center hover:shadow-xl block">
-        <div class="text-4xl mb-2">📄</div>
-        <h3 class="text-lg font-semibold">Lista de Asistentes</h3>
-      </div>
+    <a href="asistentes.php" class="bg-white rounded-2xl shadow-lg p-6 text-center hover:shadow-xl block transition">
+      <div class="text-4xl mb-2">🧾</div>
+      <h3 class="text-lg font-semibold">Lista de Asistentes</h3>
+    </a>
+
 
       <div class="bg-white rounded-2xl shadow-lg p-6 text-center hover:shadow-xl block">
         <div class="text-4xl mb-2">📊</div>
