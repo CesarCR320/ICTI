@@ -1,67 +1,87 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Escanear QR - ICTI</title>
+  <meta charset="UTF-8">
+  <title>Escaneo de Asistencia - ICTI</title>
+  <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
   <script src="https://cdn.tailwindcss.com"></script>
-  <script src="https://unpkg.com/html5-qrcode"></script>
   <style>
-    body {
-      font-family: 'Poppins', sans-serif;
-    }
+    body { font-family: 'Poppins', sans-serif; }
   </style>
 </head>
-<body class="bg-gray-100 min-h-screen flex items-center justify-center">
+<body class="bg-gray-100 text-gray-800">
 
-  <div class="bg-white p-6 rounded-2xl shadow-lg max-w-xl w-full text-center">
-    <h2 class="text-2xl font-bold text-[#002b5c] mb-4">📸 Escáner de Código QR</h2>
-    <p class="text-gray-600 mb-6">Coloca el código frente a la cámara para registrar asistencia</p>
-
-    <div id="reader" class="mx-auto" style="width: 300px;"></div>
-
-    <div id="resultado" class="mt-6 hidden">
-      <p class="text-green-600 font-semibold text-lg">✅ Asistencia registrada para el folio:</p>
-      <p id="folio-leido" class="text-lg font-bold text-[#002b5c] mt-2"></p>
+  <div class="max-w-4xl mx-auto px-4 py-6">
+    <!-- Encabezado -->
+    <div class="text-center mb-6">
+      <h1 class="text-3xl font-bold text-[#002b5c]">📷 Registro de Asistencia</h1>
+      <p class="text-sm text-gray-600 mt-2">Escanea el código QR del asistente para marcar su presencia en el evento.</p>
     </div>
 
-    <button onclick="reiniciarEscaneo()" class="mt-6 px-4 py-2 bg-[#007acc] text-white rounded hover:bg-blue-700">
-      Escanear otro
-    </button>
-    
-    <a href="index.php" class="mt-4 block text-sm text-[#002b5c] underline">← Volver al menú principal</a>
+    <!-- Cámara y Área de Escaneo -->
+    <div class="bg-white p-6 rounded-xl shadow-lg flex flex-col items-center gap-4">
+      <div id="reader" class="w-full max-w-sm mx-auto border-4 border-[#007acc] rounded-lg overflow-hidden shadow"></div>
+      <p class="text-center text-sm text-gray-500">Coloca el código QR frente a la cámara. El registro es automático.</p>
+    </div>
   </div>
 
+  <!-- Modal -->
+  <div id="modal" class="fixed inset-0 z-50 bg-black bg-opacity-50 hidden flex items-center justify-center">
+    <div class="bg-white rounded-lg shadow-lg p-6 w-full max-w-lg relative">
+      <button id="cerrarModal" class="absolute top-2 right-3 text-xl text-gray-500 hover:text-black">×</button>
+      <h2 class="text-lg font-semibold text-[#002b5c] mb-3">📋 Datos del Asistente</h2>
+      <div id="modalContenido" class="text-gray-700 space-y-2 text-sm"></div>
+    </div>
+  </div>
+
+  <!-- JS -->
   <script>
-    const resultado = document.getElementById("resultado");
-    const folioTexto = document.getElementById("folio-leido");
+    let scanner = new Html5Qrcode("reader");
 
-    function iniciarEscaneo() {
-      const scanner = new Html5Qrcode("reader");
+    function mostrarModal(html) {
+      $("#modalContenido").html(html);
+      $("#modal").removeClass("hidden");
+    }
 
-      scanner.start(
-        { facingMode: "environment" },
-        {
-          fps: 10,
-          qrbox: 250
-        },
-        qrCodeMessage => {
-          scanner.stop(); 
-          folioTexto.textContent = qrCodeMessage;
-          resultado.classList.remove("hidden");
-        },
-        errorMessage => {
-        }
-      ).catch(err => {
-        console.error(err);
+    function cerrarModal() {
+      $("#modal").addClass("hidden");
+      $("#modalContenido").html("");
+    }
+
+    function buscarAsistente(folio) {
+      $.post("funciones/buscar_asistente.php", { folio: folio }, function (data) {
+        mostrarModal(data);
+      }).fail(function () {
+        mostrarModal("<p class='text-red-500'>❌ Error al buscar el asistente.</p>");
       });
     }
 
-    function reiniciarEscaneo() {
-      location.reload();
+    $("#cerrarModal").click(() => {
+      cerrarModal();
+      scanner.resume();
+    });
+
+    function onScanSuccess(decodedText) {
+      scanner.pause(); // Pausar escáner para mostrar datos
+      buscarAsistente(decodedText);
     }
 
-    window.onload = iniciarEscaneo;
+    Html5Qrcode.getCameras().then(cameras => {
+      if (cameras && cameras.length) {
+        scanner.start(cameras[0].id, { fps: 10, qrbox: 250 }, onScanSuccess);
+      } else {
+        alert("No se encontraron cámaras disponibles.");
+      }
+    });
+
+    // Cerrar modal al hacer clic fuera del contenido
+    $("#modal").on("click", function (e) {
+      if (e.target.id === "modal") {
+        cerrarModal();
+        scanner.resume();
+      }
+    });
   </script>
 
 </body>
