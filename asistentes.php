@@ -1,7 +1,6 @@
 <?php
 include 'config.php';
 
-// Obtener evento activo
 $eventoQuery = "SELECT id, nombre FROM eventos WHERE activo = 1 LIMIT 1";
 $eventoResult = $conn->query($eventoQuery);
 
@@ -13,7 +12,6 @@ $evento = $eventoResult->fetch_assoc();
 $evento_id = $evento['id'];
 $evento_nombre = $evento['nombre'];
 
-// Obtener asistentes del evento activo
 $stmt = $conn->prepare("SELECT folio, nombre, apellido_paterno, apellido_materno, institucion, asistencia FROM asistentes_congreso WHERE evento_id = ?");
 $stmt->bind_param("i", $evento_id);
 $stmt->execute();
@@ -41,7 +39,6 @@ $conn->close();
 <body class="bg-gray-100 p-6">
 
   <div class="max-w-7xl mx-auto">
-    <!-- Encabezado: Flecha + Título + Botón -->
     <div class="flex flex-col sm:flex-row justify-between items-center mb-4 gap-4">
       <div class="flex items-center gap-2">
         <a href="index.php" class="text-[#002b5c] text-2xl hover:text-blue-800 transition">←</a>
@@ -52,12 +49,10 @@ $conn->close();
       </button>
     </div>
 
-    <!-- Mensaje de confirmación -->
     <div id="mensajeQR" class="hidden mb-4 p-4 bg-green-100 border border-green-400 text-green-800 rounded">
       ✅ Códigos QR generados exitosamente.
     </div>
 
-    <!-- Tabla de asistentes -->
     <div class="overflow-x-auto bg-white shadow-md rounded-xl">
       <table class="min-w-full divide-y divide-gray-200">
         <thead class="bg-[#007acc] text-white">

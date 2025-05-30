@@ -94,7 +94,6 @@ $conn->close();
       <div class="bg-white rounded-2xl shadow-lg p-6 text-center hover:shadow-xl block">
         <div class="text-4xl mb-2">⚙️</div>
         <h3 class="text-lg font-semibold">Configuración</h3>
-        <p class="text-sm text-gray-500">(En desarrollo)</p>
       </div>
 
     </div>
