@@ -11,7 +11,7 @@ if ($result && $result->num_rows > 0) {
     $row = $result->fetch_assoc();
     $evento_activo = $row['nombre'];
     $fecha_evento = $row['fecha'];
-}
+} 
 
 $conn->close();
 ?>
@@ -65,7 +65,6 @@ $conn->close();
       <h3 class="text-lg font-semibold">Lista de Asistentes</h3>
     </a>
 
-
       <div class="bg-white rounded-2xl shadow-lg p-6 text-center hover:shadow-xl block">
         <div class="text-4xl mb-2">📊</div>
         <h3 class="text-lg font-semibold">Estadísticas</h3>
@@ -85,16 +84,11 @@ $conn->close();
         <h3 class="text-lg font-semibold">Crear Evento</h3>
       </a>
 
-<a href="seleccionar_evento.php" class="bg-white rounded-2xl shadow-lg p-6 text-center hover:shadow-xl block">
-  <div class="text-4xl mb-2">🎯</div>
-  <h3 class="text-lg font-semibold">Activar Evento</h3>
-</a>
+      <a href="seleccionar_evento.php" class="bg-white rounded-2xl shadow-lg p-6 text-center hover:shadow-xl block">
+        <div class="text-4xl mb-2">🎯</div>
+        <h3 class="text-lg font-semibold">Activar Evento</h3>
+      </a>
 
-
-      <div class="bg-white rounded-2xl shadow-lg p-6 text-center hover:shadow-xl block">
-        <div class="text-4xl mb-2">⚙️</div>
-        <h3 class="text-lg font-semibold">Configuración</h3>
-      </div>
 
     </div>
   </main>
