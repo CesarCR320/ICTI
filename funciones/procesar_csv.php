@@ -48,12 +48,12 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_FILES["archivo_csv"])) {
         $stmt = $conn->prepare("INSERT INTO asistentes_congreso (
             folio, nombre, apellido_paterno, apellido_materno, nacionalidad, estado, municipio, edad,
             genero, estado_civil, escolaridad, institucion, facultad, email, comunidad_indigena,
-            comunidad_indigena_nombre, evento_id
-        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+             ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
 
         $stmt->bind_param("sssssssissssssssi", $folio, $nombre, $apellido_paterno, $apellido_materno, $nacionalidad,
             $estado, $municipio, $edad, $genero, $estado_civil, $escolaridad, $institucion, $facultad, $email,
-            $comunidad_indigena, $comunidad_nombre, $evento_id);
+            $comunidad_indigena, $comunidcomunidad_indigena_nombre, evento_id
+        ) VALUES (?, ?, ?, ?, ?, ?, ?,ad_nombre, $evento_id);
 
         if ($stmt->execute()) {
             $insertados++;

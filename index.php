@@ -1,96 +1,99 @@
-<?php
-include 'config.php';
-
-$evento_activo = "Ningún evento activo";
-$fecha_evento = "";
-
-$query = "SELECT nombre, fecha FROM eventos WHERE activo = 1 LIMIT 1";
-$result = $conn->query($query);
-
-if ($result && $result->num_rows > 0) {
-    $row = $result->fetch_assoc();
-    $evento_activo = $row['nombre'];
-    $fecha_evento = $row['fecha'];
-} 
-
-$conn->close();
-?>
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Panel Principal - ICTI</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ICTI - Sistema de Asistencia</title>
   <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet" />
   <style>
     body {
       font-family: 'Poppins', sans-serif;
+      background: linear-gradient(to bottom right, #f0f4ff, #ffffff);
+    }
+    .card {
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      cursor: pointer;
+      border: 2px solid #C1228E; /* Magenta ICTI */
+      background: white;
+    }
+    .card:hover {
+      transform: translateY(-6px);
+      box-shadow: 0 20px 30px rgba(0, 0, 0, 0.15);
+      background-color: #fce6f2; 
+    }
+    .emoji {
+      font-size: 2.5rem;
+      margin-bottom: 0.5rem;
     }
   </style>
 </head>
-<body class="bg-gray-100">
-
-  <nav class="bg-[#002b5c] text-white px-6 py-4 shadow-md">
-    <div class="max-w-7xl mx-auto text-center">
-      <h1 class="text-xl font-semibold">📌 ICTI - Sistema de Asistencia</h1>
+<body>
+  <nav class="bg-gradient-to-r from-[#C1228E] via-[#007ACC] to-[#002D5C] text-white px-6 py-4 shadow-lg sticky top-0 z-50 rounded-b-xl">
+    <div class="max-w-7xl mx-auto flex justify-center">
+      <h1 class="text-2xl font-bold">📌 ICTI - Sistema de Asistencia</h1>
     </div>
   </nav>
 
-  <main class="max-w-6xl mx-auto mt-10 px-4">
-
-    <div class="bg-white p-6 rounded-xl shadow-md mb-10">
-      <h2 class="text-lg font-semibold mb-1">👋 Bienvenido</h2>
-      <p class="text-gray-600">Evento activo: <strong><?php echo $evento_activo; ?></strong></p>
-      <?php if (!empty($fecha_evento)): ?>
-        <p class="text-gray-600">Fecha: <strong><?php echo $fecha_evento; ?></strong></p>
-      <?php endif; ?>
-    </div>
-
-    <h3 class="text-xl font-bold text-gray-800 mb-4">🛠️ Funciones de Registro</h3>
-    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 mb-12">
-
-      <a href="escanear.html" class="bg-white rounded-2xl shadow-lg p-6 text-center hover:shadow-xl block">
-        <div class="text-4xl mb-2">📸</div>
-        <h3 class="text-lg font-semibold">Escanear QR</h3>
-      </a>
-
-      <a href="registrar_folio.html" class="bg-white rounded-2xl shadow-lg p-6 text-center hover:shadow-xl block">
-        <div class="text-4xl mb-2">🔍</div>
-        <h3 class="text-lg font-semibold">Registrar por Folio</h3>
-      </a>
-
-    <a href="asistentes.php" class="bg-white rounded-2xl shadow-lg p-6 text-center hover:shadow-xl block transition">
-      <div class="text-4xl mb-2">🧾</div>
-      <h3 class="text-lg font-semibold">Lista de Asistentes</h3>
-    </a>
-
-      <div class="bg-white rounded-2xl shadow-lg p-6 text-center hover:shadow-xl block">
-        <div class="text-4xl mb-2">📊</div>
-        <h3 class="text-lg font-semibold">Estadísticas</h3>
+  <main class="max-w-6xl mx-auto px-4 py-12">
+    <section class="mb-12">
+      <div class="bg-white p-6 rounded-2xl shadow-lg text-center">
+        <h2 class="text-3xl font-bold text-[#002D5C] mb-2">👋 Bienvenido</h2>
+        <p class="text-gray-600">Evento activo: <span id="eventoNombre" class="font-semibold text-black"></span></p>
+        <p class="text-gray-600">Fecha: <span id="eventoFecha" class="font-semibold text-black"></span></p>
       </div>
-    </div>
+    </section>
 
-    <h3 class="text-xl font-bold text-gray-800 mb-4">⚙️ Funciones Administrativas</h3>
-    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+    <section class="mb-12">
+      <h3 class="text-2xl font-semibold text-[#002D5C] mb-6">🛠️ Funciones de Registro</h3>
+      <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6" id="menuRegistro"></div>
+    </section>
 
-      <a href="cargar_base.html" class="bg-white rounded-2xl shadow-lg p-6 text-center hover:shadow-xl block">
-    <div class="text-4xl mb-2">⬆️</div>
-    <h3 class="text-lg font-semibold">Cargar Base de Datos</h3>
-  </a>
-
-      <a href="crear_evento.html" class="bg-white rounded-2xl shadow-lg p-6 text-center hover:shadow-xl block">
-        <div class="text-4xl mb-2">📅</div>
-        <h3 class="text-lg font-semibold">Crear Evento</h3>
-      </a>
-
-      <a href="seleccionar_evento.php" class="bg-white rounded-2xl shadow-lg p-6 text-center hover:shadow-xl block">
-        <div class="text-4xl mb-2">🎯</div>
-        <h3 class="text-lg font-semibold">Activar Evento</h3>
-      </a>
-
-
-    </div>
+    <section>
+      <h3 class="text-2xl font-semibold text-[#002D5C] mb-6">⚙️ Funciones Administrativas</h3>
+      <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6" id="menuAdmin"></div>
+    </section>
   </main>
+
+  <script>
+    const evento = {
+      nombre: "19º Congreso Estatal de Ciencia",
+      fecha: "15 de Octubre de 2025"
+    };
+
+    const registro = [
+      { emoji: '📸', texto: 'Escanear QR', link: 'escanear.html' },
+      { emoji: '🔍', texto: 'Registrar por Folio', link: 'registrar_folio.html' },
+      { emoji: '🧾', texto: 'Lista de Asistentes', link: 'asistentes.php' },
+      { emoji: '📊', texto: 'Estadísticas', link: 'estadisticas.php' }
+    ];
+
+    const admin = [
+      { emoji: '⬆️', texto: 'Cargar Base', link: 'cargar_base.html' },
+      { emoji: '📅', texto: 'Crear Evento', link: 'crear_evento.html' },
+      { emoji: '🎯', texto: 'Activar Evento', link: 'seleccionar_evento.php' }
+    ];
+
+    document.getElementById("eventoNombre").textContent = evento.nombre;
+    document.getElementById("eventoFecha").textContent = evento.fecha;
+
+    function crearTarjetas(arr, contenedorId) {
+      const contenedor = document.getElementById(contenedorId);
+      arr.forEach(op => {
+        const card = document.createElement("div");
+        card.className = "card rounded-2xl p-6 text-center shadow-md hover:shadow-xl";
+        card.onclick = () => window.location.href = op.link;
+        card.innerHTML = `
+          <div class="emoji">${op.emoji}</div>
+          <h4 class="text-lg font-semibold text-[#002D5C]">${op.texto}</h4>
+        `;
+        contenedor.appendChild(card);
+      });
+    }
+
+    crearTarjetas(registro, "menuRegistro");
+    crearTarjetas(admin, "menuAdmin");
+  </script>
 </body>
 </html>
