@@ -15,7 +15,7 @@
     .card {
       transition: transform 0.3s ease, box-shadow 0.3s ease;
       cursor: pointer;
-      border: 2px solid #C1228E; /* Magenta ICTI */
+      border: 2px solid #C1228E;
       background: white;
     }
     .card:hover {
