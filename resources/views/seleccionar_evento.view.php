@@ -14,47 +14,41 @@
 </head>
 <body class="flex justify-center items-center min-h-screen p-4">
 
-  <div class="bg-white p-8 rounded-2xl shadow-lg w-full max-w-md">
-    <h2 class="text-xl font-bold text-center mb-6 text-[#002b5c]">🎯 Seleccionar Evento Activo</h2>
+<div class="bg-white p-8 rounded-2xl shadow-lg w-full max-w-md">
+  <h2 class="text-xl font-bold text-center mb-6 text-[#002b5c]">🎯 Seleccionar Evento Activo</h2>
 
-    <form action="funciones/activar_evento.php" method="POST" id="formSeleccionarEvento">
-      <label for="evento_id" class="block font-semibold text-gray-700 mb-2">Elige un evento:</label>
-      <select name="evento_id" id="evento_id" required class="w-full p-3 border rounded-lg mb-4 transition">
-        <option value="">-- Selecciona --</option>
+  <?php if (isset($_GET['success'])): ?>
+    <div class="mb-4 text-green-700 bg-green-100 border border-green-300 rounded p-2 text-center">
+      ✅ Evento activado exitosamente.
+    </div>
+  <?php endif; ?>
+  <?php if (isset($_GET['error'])): ?>
+    <div class="mb-4 text-red-700 bg-red-100 border border-red-300 rounded p-2 text-center">
+      ❌ Ocurrió un error. Intenta de nuevo.
+    </div>
+  <?php endif; ?>
+
+  <form action="activar_evento.php" method="POST" id="formSeleccionarEvento">
+    <label for="evento_id" class="block font-semibold text-gray-700 mb-2">Elige un evento:</label>
+    <select name="evento_id" id="evento_id" required class="w-full p-3 border rounded-lg mb-4 transition">
+      <option value="">-- Selecciona --</option>
       <?php foreach ($eventos as $evento): ?>
-  <option value="<?= htmlspecialchars($evento['id']) ?>">
-    <?= htmlspecialchars($evento['nombre']) ?>
-    <?php if (!empty($evento['fecha'])): ?>
-      (<?= date('d/m/Y', strtotime($evento['fecha'])) ?>)
-    <?php endif; ?>
-  </option>
-<?php endforeach; ?>
-      </select>
+        <option value="<?= htmlspecialchars($evento['id']) ?>">
+          <?= htmlspecialchars($evento['nombre']) ?>
+          <?php if (!empty($evento['fecha'])): ?>
+            (<?= date('d/m/Y', strtotime($evento['fecha'])) ?>)
+          <?php endif; ?>
+        </option>
+      <?php endforeach; ?>
+    </select>
 
-      <button type="submit" class="w-full bg-[#007acc] text-white font-semibold py-2 rounded-lg hover:bg-blue-700 transition">
-        Activar evento
-      </button>
-    </form>
+    <button type="submit" class="w-full bg-[#007acc] text-white font-semibold py-2 rounded-lg hover:bg-blue-700 transition">
+      Activar evento
+    </button>
+  </form>
 
-    <div id="msg" class="hidden mt-4 text-sm text-center"></div>
+  <a href="index.php" class="block mt-4 text-center text-sm text-[#002b5c] underline hover:text-[#007acc] transition">← Volver al menú</a>
+</div>
 
-    <a href="index.php" class="block mt-4 text-center text-sm text-[#002b5c] underline hover:text-[#007acc] transition">← Volver al menú</a>
-  </div>
-
-  <script>
-    // Mejora: Validación y UX mejorada en JS
-    document.getElementById('formSeleccionarEvento').addEventListener('submit', function(e) {
-      const select = document.getElementById('evento_id');
-      const msg = document.getElementById('msg');
-      if (!select.value) {
-        e.preventDefault();
-        msg.textContent = "Por favor, selecciona un evento válido.";
-        msg.className = "block mt-4 text-sm text-center text-red-600";
-        select.focus();
-      } else {
-        msg.className = "hidden";
-      }
-    });
-  </script>
 </body>
 </html>
