@@ -1,19 +1,3 @@
-<?php
-include 'config.php';
-
-$eventos = [];
-$query = "SELECT id, nombre FROM eventos ORDER BY fecha DESC";
-$result = $conn->query($query);
-
-if ($result) {
-    while ($row = $result->fetch_assoc()) {
-        $eventos[] = $row;
-    }
-}
-
-$conn->close();
-?>
-
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -30,7 +14,7 @@ $conn->close();
       <select name="evento_id" id="evento_id" required class="w-full p-3 border rounded-lg mb-6">
         <option value="">-- Selecciona --</option>
         <?php foreach ($eventos as $evento): ?>
-          <option value="<?= $evento['id'] ?>"><?= $evento['nombre'] ?></option>
+          <option value="<?= htmlspecialchars($evento['id']) ?>"><?= htmlspecialchars($evento['nombre']) ?></option>
         <?php endforeach; ?>
       </select>
 

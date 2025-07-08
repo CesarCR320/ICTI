@@ -1,30 +1,3 @@
-<?php
-include 'config.php';
-
-$eventoQuery = "SELECT id, nombre FROM eventos WHERE activo = 1 LIMIT 1";
-$eventoResult = $conn->query($eventoQuery);
-
-if (!$eventoResult || $eventoResult->num_rows === 0) {
-    die("❌ No hay evento activo. Activa uno primero.");
-}
-
-$evento = $eventoResult->fetch_assoc();
-$evento_id = $evento['id'];
-$evento_nombre = $evento['nombre'];
-
-$stmt = $conn->prepare("SELECT folio, nombre, apellido_paterno, apellido_materno, institucion, asistencia FROM asistentes_congreso WHERE evento_id = ?");
-$stmt->bind_param("i", $evento_id);
-$stmt->execute();
-$result = $stmt->get_result();
-
-$asistentes = [];
-while ($row = $result->fetch_assoc()) {
-    $asistentes[] = $row;
-}
-
-$stmt->close();
-$conn->close();
-?>
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -69,21 +42,20 @@ $conn->close();
             <tr class="hover:bg-gray-50">
               <td class="px-4 py-3">
                 <img src="qrs/<?php echo htmlspecialchars($asistente['folio']); ?>.png"
-                     alt="QR"
-                     width="60"
-                     onerror="this.src='https://via.placeholder.com/60x60?text=No+QR';">
+                     alt="QR-<?php echo htmlspecialchars($asistente['folio']); ?>"
+                     class="w-12 h-12 object-contain" />
               </td>
-              <td class="px-4 py-3 font-mono"><?php echo htmlspecialchars($asistente['folio']); ?></td>
+              <td class="px-4 py-3"><?php echo htmlspecialchars($asistente['folio']); ?></td>
               <td class="px-4 py-3">
-                <?php echo htmlspecialchars($asistente['nombre'] . ' ' . $asistente['apellido_paterno'] . ' ' . $asistente['apellido_materno']); ?>
+                <?php
+                  echo htmlspecialchars($asistente['nombre']) . " " .
+                      htmlspecialchars($asistente['apellido_paterno']) . " " .
+                      htmlspecialchars($asistente['apellido_materno']);
+                ?>
               </td>
               <td class="px-4 py-3"><?php echo htmlspecialchars($asistente['institucion']); ?></td>
               <td class="px-4 py-3">
-                <?php if ($asistente['asistencia']): ?>
-                  <span class="text-green-600 font-semibold">✔ Asistió</span>
-                <?php else: ?>
-                  <span class="text-red-500 font-semibold">✘ No asistió</span>
-                <?php endif; ?>
+                <?php echo $asistente['asistencia'] ? '✅' : '❌'; ?>
               </td>
             </tr>
           <?php endforeach; ?>
@@ -93,17 +65,12 @@ $conn->close();
   </div>
 
   <script>
-    $('#generarQRsBtn').click(function () {
-      $.get('funciones/generar_qrs.php', function (data) {
-        $('#mensajeQR').removeClass('hidden').removeClass('bg-red-100 border-red-400 text-red-800')
-          .addClass('bg-green-100 border-green-400 text-green-800').html('✅ ' + data).show();
-        setTimeout(() => $('#mensajeQR').fadeOut(), 5000);
-      }).fail(function () {
-        $('#mensajeQR').removeClass('hidden').removeClass('bg-green-100 border-green-400 text-green-800')
-          .addClass('bg-red-100 border-red-400 text-red-800').html('❌ Error al generar los QR.').show();
-      });
+    // Aquí puedes añadir JS para generar QR, mostrar mensajes, etc.
+    $("#generarQRsBtn").click(function () {
+      // Tu código AJAX para generar QRs
+      $("#mensajeQR").removeClass("hidden");
+      setTimeout(() => $("#mensajeQR").addClass("hidden"), 3000);
     });
   </script>
-
 </body>
 </html>

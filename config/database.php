@@ -1,15 +1,12 @@
 <?php
-$host = "localhost";
-$usuario = "root";
-$contrasena = ""; 
-$base_datos = "icti";
+$host = 'localhost';
+$user = 'root';
+$password = ''; // En XAMPP suele estar en blanco
+$database = 'icti';
 
-$conn = new mysqli($host, $usuario, $contrasena, $base_datos);
+$conn = new mysqli($host, $user, $password, $database);
 
 if ($conn->connect_error) {
-    die("❌ Error de conexión: " . $conn->connect_error);
+    die("Conexión fallida: " . $conn->connect_error);
 }
-
-$conn->set_charset("utf8");
-
 ?>
