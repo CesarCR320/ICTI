@@ -1,8 +1,10 @@
 <?php
+require_once __DIR__ . '/../../config/database.php';
+
 class EventController {
     // Muestra la vista para seleccionar evento
     public static function selectEventView() {
-        require_once __DIR__ . '/../../config/database.php';
+        $conn = getDatabaseConnection();
 
         $eventos = [];
         $query = "SELECT id, nombre, fecha FROM eventos ORDER BY fecha DESC";
@@ -21,7 +23,7 @@ class EventController {
 
     // Procesa el formulario para activar evento
     public static function activarEvento() {
-        require_once __DIR__ . '/../../config/database.php';
+        $conn = getDatabaseConnection();
 
         if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['evento_id'])) {
             $evento_id = intval($_POST['evento_id']);
@@ -44,3 +46,4 @@ class EventController {
         }
     }
 }
+?>
