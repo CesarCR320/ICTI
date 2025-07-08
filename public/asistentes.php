@@ -1,3 +1,6 @@
 <?php
 require_once __DIR__ . '/../app/controllers/AttendanceController.php';
-AttendanceController::showList();
+
+$controller = new AttendanceController();
+$controller->showList();
+?>

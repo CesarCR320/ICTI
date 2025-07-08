@@ -1,60 +1,56 @@
-<?php
-require_once __DIR__ . '/../../config/database.php';
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Lista de Asistentes</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 40px; }
+        table { border-collapse: collapse; width: 100%; margin-top: 20px; }
+        th, td { border: 1px solid #ccc; padding: 8px; text-align: left; }
+        th { background-color: #f5f5f5; }
+        .event-info { margin-bottom: 20px; }
+        .empty { color: #b00; font-weight: bold; }
+    </style>
+</head>
+<body>
+    <h1>Lista de Asistentes</h1>
+    <?php if (isset($eventoActivo) && $eventoActivo): ?>
+        <div class="event-info">
+            <strong>Evento activo:</strong>
+            <?php echo htmlspecialchars($eventoActivo['nombre']); ?>
+            (Fecha: <?php echo htmlspecialchars($eventoActivo['fecha']); ?>)
+        </div>
+    <?php else: ?>
+        <div class="event-info empty">No hay evento activo actualmente.</div>
+    <?php endif; ?>
 
-class AttendanceController
-{
-    public function showList($evento_id, $evento_nombre)
-    {
-        global $conn;
-        $asistentes = [];
-
-        $stmt = $conn->prepare(
-            "SELECT folio, nombre, apellido_paterno, apellido_materno, institucion, asistencia, fecha_asistencia
-             FROM asistentes_congreso
-             WHERE evento_id = ?"
-        );
-        $stmt->bind_param("i", $evento_id);
-        $stmt->execute();
-        $result = $stmt->get_result();
-
-        while ($row = $result->fetch_assoc()) {
-            $asistentes[] = $row;
-        }
-
-        // Pasa $evento_nombre a la vista
-        include __DIR__ . '/../../resources/views/asistentes.view.php';
-    }
-
-    public function registrarAsistencia($folio, $evento_id)
-    {
-        global $conn;
-        $stmt = $conn->prepare("UPDATE asistentes_congreso SET asistencia = 1, fecha_asistencia = NOW() WHERE folio = ? AND evento_id = ?");
-        $stmt->bind_param("si", $folio, $evento_id);
-        $stmt->execute();
-        return $stmt->affected_rows > 0;
-    }
-
-    public function obtenerAsistentePorFolio($folio, $evento_id)
-    {
-        global $conn;
-        $stmt = $conn->prepare("SELECT folio, nombre, apellido_paterno, apellido_materno, institucion, asistencia, fecha_asistencia FROM asistentes_congreso WHERE folio = ? AND evento_id = ?");
-        $stmt->bind_param("si", $folio, $evento_id);
-        $stmt->execute();
-        $result = $stmt->get_result();
-        return $result->fetch_assoc();
-    }
-
-    public function generarQR($folio)
-    {
-        // Ejemplo de generación de QR (ajusta según tu lógica real)
-        $qrPath = __DIR__ . "/../../public/qrs/$folio.png";
-        if (!file_exists($qrPath)) {
-            // Usar una librería de QR real aquí en producción
-            file_put_contents($qrPath, 'QR_PLACEHOLDER');
-        }
-        return $qrPath;
-    }
-
-    // Agrega aquí cualquier otro método que ya tengas en tu controller
-}
-?>
+    <?php if (count($asistentes) > 0): ?>
+        <table>
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Nombre</th>
+                    <th>Correo</th>
+                    <th>Folio</th>
+                    <th>Hora de Registro</th>
+                    <!-- Agrega más columnas según tu tabla -->
+                </tr>
+            </thead>
+            <tbody>
+                <?php foreach ($asistentes as $i => $asistente): ?>
+                    <tr>
+                        <td><?php echo $i+1; ?></td>
+                        <td><?php echo htmlspecialchars($asistente['nombre']); ?></td>
+                        <td><?php echo htmlspecialchars($asistente['email']); ?></td>
+                        <td><?php echo htmlspecialchars($asistente['folio']); ?></td>
+                        <td><?php echo htmlspecialchars($asistente['hora_registro']); ?></td>
+                        <!-- Más columnas si necesitas -->
+                    </tr>
+                <?php endforeach; ?>
+            </tbody>
+        </table>
+    <?php else: ?>
+        <div class="empty">No hay asistentes registrados.</div>
+    <?php endif; ?>
+</body>
+</html>
