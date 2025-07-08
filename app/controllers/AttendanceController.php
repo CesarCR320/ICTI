@@ -1,106 +1,60 @@
 <?php
-class AttendanceController {
+require_once __DIR__ . '/../../config/database.php';
 
-    // Muestra el listado de asistentes (ajusta este método según tus necesidades)
-    public static function showList($mensaje = '') {
-        require_once __DIR__ . '/../../config/database.php';
-
-        // Obtener evento activo
-        $eventoQuery = "SELECT id, nombre FROM eventos WHERE activo = 1 LIMIT 1";
-        $eventoResult = $conn->query($eventoQuery);
-
-        $evento = null;
-        if ($eventoResult && $eventoResult->num_rows > 0) {
-            $evento = $eventoResult->fetch_assoc();
-        }
-
+class AttendanceController
+{
+    public function showList($evento_id, $evento_nombre)
+    {
+        global $conn;
         $asistentes = [];
-        if ($evento) {
-            // Ajusta los campos según tus columnas reales
-            $stmt = $conn->prepare(
-                "SELECT folio, nombre, apellido_paterno, apellido_materno, asistencia, fecha_asistencia 
-                 FROM asistentes_congreso 
-                 WHERE evento_id = ?"
-            );
-            $stmt->bind_param("i", $evento['id']);
-            $stmt->execute();
-            $result = $stmt->get_result();
-            while ($row = $result->fetch_assoc()) {
-                $asistentes[] = $row;
-            }
-            $stmt->close();
+
+        $stmt = $conn->prepare(
+            "SELECT folio, nombre, apellido_paterno, apellido_materno, institucion, asistencia, fecha_asistencia
+             FROM asistentes_congreso
+             WHERE evento_id = ?"
+        );
+        $stmt->bind_param("i", $evento_id);
+        $stmt->execute();
+        $result = $stmt->get_result();
+
+        while ($row = $result->fetch_assoc()) {
+            $asistentes[] = $row;
         }
 
-        $conn->close();
-
-        // Incluye la vista de listado (ajústala según tu estructura)
-        require __DIR__ . '/../../resources/views/lista_asistentes.view.php';
+        // Pasa $evento_nombre a la vista
+        include __DIR__ . '/../../resources/views/asistentes.view.php';
     }
 
-    // Muestra el formulario de registro por folio
-    public static function showFolioForm($mensaje = '') {
-        require_once __DIR__ . '/../../config/database.php';
+    public function registrarAsistencia($folio, $evento_id)
+    {
+        global $conn;
+        $stmt = $conn->prepare("UPDATE asistentes_congreso SET asistencia = 1, fecha_asistencia = NOW() WHERE folio = ? AND evento_id = ?");
+        $stmt->bind_param("si", $folio, $evento_id);
+        $stmt->execute();
+        return $stmt->affected_rows > 0;
+    }
 
-        // Obtener evento activo
-        $eventoQuery = "SELECT id, nombre FROM eventos WHERE activo = 1 LIMIT 1";
-        $eventoResult = $conn->query($eventoQuery);
+    public function obtenerAsistentePorFolio($folio, $evento_id)
+    {
+        global $conn;
+        $stmt = $conn->prepare("SELECT folio, nombre, apellido_paterno, apellido_materno, institucion, asistencia, fecha_asistencia FROM asistentes_congreso WHERE folio = ? AND evento_id = ?");
+        $stmt->bind_param("si", $folio, $evento_id);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        return $result->fetch_assoc();
+    }
 
-        $evento = null;
-        if ($eventoResult && $eventoResult->num_rows > 0) {
-            $evento = $eventoResult->fetch_assoc();
+    public function generarQR($folio)
+    {
+        // Ejemplo de generación de QR (ajusta según tu lógica real)
+        $qrPath = __DIR__ . "/../../public/qrs/$folio.png";
+        if (!file_exists($qrPath)) {
+            // Usar una librería de QR real aquí en producción
+            file_put_contents($qrPath, 'QR_PLACEHOLDER');
         }
-        $conn->close();
-
-        require __DIR__ . '/../../resources/views/registrar_folio.view.php';
+        return $qrPath;
     }
 
-    // Procesa el registro de asistencia por folio
-    public static function registrarFolio() {
-        require_once __DIR__ . '/../../config/database.php';
-        $mensaje = '';
-
-        if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['folio'])) {
-            $folio = trim($_POST['folio']);
-
-            // Buscar evento activo
-            $eventoQuery = "SELECT id FROM eventos WHERE activo = 1 LIMIT 1";
-            $eventoResult = $conn->query($eventoQuery);
-
-            if ($eventoResult && $eventoResult->num_rows > 0) {
-                $evento = $eventoResult->fetch_assoc();
-                $evento_id = $evento['id'];
-
-                // Buscar folio
-                $stmt = $conn->prepare("SELECT id, nombre, apellido_paterno, apellido_materno, asistencia FROM asistentes_congreso WHERE folio = ? AND evento_id = ?");
-                $stmt->bind_param("si", $folio, $evento_id);
-                $stmt->execute();
-                $result = $stmt->get_result();
-
-                if ($result->num_rows > 0) {
-                    $asistente = $result->fetch_assoc();
-
-                    if ($asistente['asistencia']) {
-                        $mensaje = "⚠️ El asistente <strong>{$asistente['nombre']} {$asistente['apellido_paterno']} {$asistente['apellido_materno']}</strong> ya está registrado como presente.";
-                    } else {
-                        $update = $conn->prepare("UPDATE asistentes_congreso SET asistencia = 1, fecha_asistencia = NOW() WHERE id = ?");
-                        $update->bind_param("i", $asistente['id']);
-                        $update->execute();
-                        $update->close();
-                        $mensaje = "✅ Asistencia registrada para <strong>{$asistente['nombre']} {$asistente['apellido_paterno']} {$asistente['apellido_materno']}</strong>.";
-                    }
-                } else {
-                    $mensaje = "❌ Folio no encontrado para el evento activo.";
-                }
-                $stmt->close();
-            } else {
-                $mensaje = "❌ No hay evento activo seleccionado.";
-            }
-            $conn->close();
-        } else {
-            $mensaje = "❌ Solicitud inválida.";
-        }
-
-        // Mostrar formulario con mensaje
-        self::showFolioForm($mensaje);
-    }
+    // Agrega aquí cualquier otro método que ya tengas en tu controller
 }
+?>
