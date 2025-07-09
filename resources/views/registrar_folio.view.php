@@ -30,6 +30,7 @@
         <div class="mb-2 text-center text-[#007acc] font-semibold">
             Evento activo: <?= htmlspecialchars($evento['nombre']) ?>
         </div>
+
         <form action="registrar_folio.php" method="POST" id="formFolio">
             <label for="folio" class="block font-semibold text-gray-700 mb-2">Folio del asistente:</label>
             <input type="text" name="folio" id="folio" required maxlength="30"
@@ -48,9 +49,8 @@
     // Limpia el formulario tras éxito para facilitar escaneo masivo
     if (document.querySelector('.text-green-700')) {
         setTimeout(() => {
-            document.getElementById('folio').value = '';
-            document.getElementById('folio').focus();
-        }, 1000);
+            document.getElementById('formFolio').reset();
+        }, 1500);
     }
 </script>
 </body>

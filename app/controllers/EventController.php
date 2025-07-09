@@ -45,5 +45,15 @@ class EventController {
             exit;
         }
     }
+
+    // Método para crear un nuevo evento
+    public static function crearEvento($datos) {
+        $conn = getDatabaseConnection();
+        $stmt = $conn->prepare("INSERT INTO eventos (nombre, fecha, lugar, activo) VALUES (?, ?, ?, 0)");
+        $stmt->bind_param("sss", $datos['nombre'], $datos['fecha'], $datos['lugar']);
+        $ok = $stmt->execute();
+        $stmt->close();
+        $conn->close();
+        return $ok;
+    }
 }
-?>

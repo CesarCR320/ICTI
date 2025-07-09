@@ -63,15 +63,15 @@
     };
 
     const registro = [
-      { emoji: '📸', texto: 'Escanear QR', link: 'escanear.html' },
-      { emoji: '🔍', texto: 'Registrar por Folio', link: 'registrar_folio.html' },
+      { emoji: '📸', texto: 'Escanear QR', link: 'escanear_qr.php' },
+      { emoji: '🔍', texto: 'Registrar por Folio', link: 'registrar_folio.php' },
       { emoji: '🧾', texto: 'Lista de Asistentes', link: 'asistentes.php' },
       { emoji: '📊', texto: 'Estadísticas', link: 'estadisticas.php' }
     ];
 
     const admin = [
-      { emoji: '⬆️', texto: 'Cargar Base', link: 'cargar_base.html' },
-      { emoji: '📅', texto: 'Crear Evento', link: 'crear_evento.html' },
+      { emoji: '⬆️', texto: 'Cargar Base', link: 'cargar_csv.php' },
+      { emoji: '📅', texto: 'Crear Evento', link: 'crear_evento.php' },
       { emoji: '🎯', texto: 'Activar Evento', link: 'seleccionar_evento.php' }
     ];
 
