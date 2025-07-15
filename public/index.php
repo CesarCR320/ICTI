@@ -56,44 +56,57 @@
     </section>
   </main>
 
-  <script>
-    const evento = {
-      nombre: "19º Congreso Estatal de Ciencia",
-      fecha: "15 de Octubre de 2025"
-    };
-
-    const registro = [
-      { emoji: '📸', texto: 'Escanear QR', link: 'escanear_qr.php' },
-      { emoji: '🔍', texto: 'Registrar por Folio', link: 'registrar_folio.php' },
-      { emoji: '🧾', texto: 'Lista de Asistentes', link: 'asistentes.php' },
-      { emoji: '📊', texto: 'Estadísticas', link: 'estadisticas.php' }
-    ];
-
-    const admin = [
-      { emoji: '⬆️', texto: 'Cargar Base', link: 'cargar_csv.php' },
-      { emoji: '📅', texto: 'Crear Evento', link: 'crear_evento.php' },
-      { emoji: '🎯', texto: 'Activar Evento', link: 'seleccionar_evento.php' }
-    ];
-
-    document.getElementById("eventoNombre").textContent = evento.nombre;
-    document.getElementById("eventoFecha").textContent = evento.fecha;
-
-    function crearTarjetas(arr, contenedorId) {
-      const contenedor = document.getElementById(contenedorId);
-      arr.forEach(op => {
-        const card = document.createElement("div");
-        card.className = "card rounded-2xl p-6 text-center shadow-md hover:shadow-xl";
-        card.onclick = () => window.location.href = op.link;
-        card.innerHTML = `
-          <div class="emoji">${op.emoji}</div>
-          <h4 class="text-lg font-semibold text-[#002D5C]">${op.texto}</h4>
-        `;
-        contenedor.appendChild(card);
+  <!-- ...tu HTML arriba... -->
+<script>
+  // Animaciones (lo que ya tienes)
+  document.addEventListener("DOMContentLoaded", () => {
+    const tarjetas = document.querySelectorAll('.animar');
+    const observer = new IntersectionObserver(entries => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+        }
       });
-    }
+    }, { threshold: 0.1 });
+    tarjetas.forEach(t => observer.observe(t));
 
-    crearTarjetas(registro, "menuRegistro");
-    crearTarjetas(admin, "menuAdmin");
-  </script>
+    // --- NUEVO: Evento activo dinámico ---
+    fetch("api/evento_activo.php")
+      .then(res => res.json())
+      .then(evento => {
+        document.getElementById("eventoNombre").textContent = evento.nombre;
+        document.getElementById("eventoFecha").textContent = evento.fecha;
+      });
+    // --- FIN NUEVO ---
+  });
+
+  // Menús (lo que ya tienes)
+  const registro = [
+    { emoji: '📸', texto: 'Escanear QR', link: 'escanear_qr.php' },
+    { emoji: '🔍', texto: 'Registrar por Folio', link: 'registrar_folio.php' },
+    { emoji: '🧾', texto: 'Lista de Asistentes', link: 'asistentes.php' },
+    { emoji: '📊', texto: 'Estadísticas', link: 'estadisticas.php' }
+  ];
+  const admin = [
+    { emoji: '⬆️', texto: 'Cargar Base', link: 'cargar_csv.php' },
+    { emoji: '📅', texto: 'Crear Evento', link: 'crear_evento.php' },
+    { emoji: '🎯', texto: 'Activar Evento', link: 'seleccionar_evento.php' }
+  ];
+  function crearTarjetas(arr, contenedorId) {
+    const contenedor = document.getElementById(contenedorId);
+    arr.forEach(op => {
+      const card = document.createElement("div");
+      card.className = "card rounded-2xl p-6 text-center shadow-md hover:shadow-xl animar";
+      card.onclick = () => window.location.href = op.link;
+      card.innerHTML = `
+        <div class="emoji">${op.emoji}</div>
+        <h4 class="text-lg font-semibold text-[#002D5C]">${op.texto}</h4>
+      `;
+      contenedor.appendChild(card);
+    });
+  }
+  crearTarjetas(registro, "menuRegistro");
+  crearTarjetas(admin, "menuAdmin");
+</script>
 </body>
 </html>
